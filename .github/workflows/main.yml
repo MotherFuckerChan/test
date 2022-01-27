@@ -26,6 +26,8 @@ jobs:
     - uses: actions/checkout@v2
     - run: git fetch origin
     - run: git checkout ${GITHUB_BASE_REF}
+    - run: git config user.email "you@example.com"
+    - run: git config user.name "Your Name"
     - run: git merge origin/${GITHUB_HEAD_REF}
     - uses: actions/setup-python@v2
       with:
