@@ -26,6 +26,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.event.pull_request.base.sha }}
+    - run: git fetch origin
+    - run: git checkout master
+    - run: get merge ${GITHUB_HEAD_REF}
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
