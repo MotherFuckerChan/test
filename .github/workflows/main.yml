@@ -35,12 +35,14 @@ jobs:
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     - run: pip install alembic
     - run: python --version
+    - run: echo "Before:" && pwd 
     - run: cd webapp/migrations/versions
-    - run: alembic init alembic
+    - run: echo "After:" && pwd 
+    - run: cd webapp/migrations/versions && alembic init alembic
     - run: ls -alh
     - run: pwd
     - run: ls alembic -alh
-    - run: for f in *.py; do cat $f | grep revision > "alembic/versions/$f"; done
-    - run: heads=$(alembic heads)
+    - run: cd webapp/migrations/versions && for f in *.py; do cat $f | grep revision > "alembic/versions/$f"; done
+    - run: cd webapp/migrations/versions && heads=$(alembic heads)
     - run: head_count=$(echo "$heads" | wc -l | awk '$1=$1')
     - run: if [ $head_count != "1" ]; then echo "There hash multiple heads, please check!"; echo $heads; exit 1; fi
