@@ -37,6 +37,7 @@ jobs:
     - run: python --version
     - run: cd webapp/migrations/versions
     - run: alembic init alembic
+    - run: ls alembic -alh
     - run: for f in *.py; do cat $f | grep revision > "alembic/versions/$f"; done
     - run: heads=$(alembic heads)
     - run: head_count=$(echo "$heads" | wc -l | awk '$1=$1')
