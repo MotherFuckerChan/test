@@ -24,8 +24,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.base.sha }}
     - run: git fetch origin
     - run: git checkout ${GITHUB_BASE_REF}
     - run: git merge ${GITHUB_HEAD_REF}
