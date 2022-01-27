@@ -37,13 +37,15 @@ jobs:
     - run: python --version
     - run: cd webapp/migrations/versions
     - run: alembic init alembic
-    - run: for f in *.py; do 
-             cat $f | grep revision > "alembic/versions/$f"
+    - run: |
+           for f in *.py; do \
+             cat $f | grep revision > "alembic/versions/$f" \
            done
     - run: heads=$(alembic heads)
     - run: head_count=$(echo "$heads" | wc -l | awk '$1=$1')
-    - run: if [ $head_count != "1" ]; then
-             echo "There hash multiple heads, please check!"
-             echo $heads
-             exit 1
+    - run: |
+           if [ $head_count != "1" ]; then \
+             echo "There hash multiple heads, please check!" \
+             echo $heads \
+             exit 1 \
            fi
