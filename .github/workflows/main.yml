@@ -47,6 +47,9 @@ jobs:
       run: for f in *.py; do cat $f | grep revision > "alembic/versions/$f"; done
     - name: Get heads
       working-directory: webapp/migrations/versions
-      run: heads=$(alembic heads)
+      run: |
+        heads=$(alembic heads)
+        echo "Get head(s): "
+        echo $heads
     - run: head_count=$(echo "$heads" | wc -l | awk '$1=$1')
     - run: if [ $head_count != "1" ]; then echo "There hash multiple heads, please check!"; echo $heads; exit 1; fi
