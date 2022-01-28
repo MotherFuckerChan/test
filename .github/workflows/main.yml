@@ -24,25 +24,29 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v2
-    - run: git fetch origin
-    - run: git checkout ${GITHUB_BASE_REF}
-    - run: git config user.email "you@example.com"
-    - run: git config user.name "Your Name"
-    - run: git merge origin/${GITHUB_HEAD_REF}
+    - name: Merge PR locally
+      run: |
+        git fetch origin
+        git checkout ${GITHUB_BASE_REF}
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
+        git merge origin/${GITHUB_HEAD_REF}
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-    - run: pip install alembic
-    - run: python --version
-    - run: echo "Before:" && pwd 
-    - run: cd webapp/migrations/versions
-    - run: echo "After:" && pwd 
-    - run: cd webapp/migrations/versions && alembic init alembic
-    - run: ls -alh
-    - run: pwd
-    - run: ls alembic -alh
-    - run: cd webapp/migrations/versions && for f in *.py; do cat $f | grep revision > "alembic/versions/$f"; done
-    - run: cd webapp/migrations/versions && heads=$(alembic heads)
+    - name: install alembic dependency
+      run: |
+        pip install alembic
+        python --version
+    - name: Init alembic workdir
+      working-directory: webapp/migrations/versions
+      run: alembic init alembic
+    - name: Extract pure revision info.
+      working-directory: webapp/migrations/versions
+      run: for f in *.py; do cat $f | grep revision > "alembic/versions/$f"; done
+    - name: Get heads
+      working-directory: webapp/migrations/versions
+      run: heads=$(alembic heads)
     - run: head_count=$(echo "$heads" | wc -l | awk '$1=$1')
     - run: if [ $head_count != "1" ]; then echo "There hash multiple heads, please check!"; echo $heads; exit 1; fi
