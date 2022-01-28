@@ -52,4 +52,6 @@ jobs:
         echo "Get head(s): "
         echo $heads
     - run: head_count=$(echo "$heads" | wc -l | awk '$1=$1')
+    - run: echo "Head count is:"
+    - run: echo $head_count
     - run: if [ $head_count != "1" ]; then echo "There hash multiple heads, please check!"; echo $heads; exit 1; fi
