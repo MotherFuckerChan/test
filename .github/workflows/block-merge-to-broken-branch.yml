@@ -15,8 +15,8 @@ jobs:
           version: 12
       - run: npm install @octokit/action
       - run: npm install @actions/core
-      - run: node .github/actions/block-merge-to-broken-branch.js
       - run: apt install tree
       - run: tree
+      - run: node .github/actions/block-merge-to-broken-branch.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
