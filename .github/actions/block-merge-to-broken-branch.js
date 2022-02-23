@@ -1,4 +1,4 @@
-try {
+async function main() {
     const { Octokit } = require("@octokit/action");
     const core = require('@actions/core');
   
@@ -42,6 +42,6 @@ try {
       throw "Exists broken branch!"
     }
   
-  } catch (e) {
-    core.setFailed(e)
   }
+
+main()
