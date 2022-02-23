@@ -15,7 +15,7 @@ async function main() {
     // 4. 判断 broken 是否由自己造成
     // 5. block merge
   
-    console.log(eventPayload)
+    console.log("Pull base", eventPayload.pull_request)
   
     if (["main", "master", "development"].indexOf(eventPayload.pull_request.base.ref) === -1) {
       process.exit(0)
