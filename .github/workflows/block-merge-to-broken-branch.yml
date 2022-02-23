@@ -1,11 +1,8 @@
 name: block-merge-to-broken-branch
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - edited
-      - synchronize
+    types: [synchronize, opened, reopened, edited]
+
 
 jobs:
   block-merge:
