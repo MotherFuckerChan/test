@@ -1,8 +1,12 @@
 async function main() {
-    const { Octokit } = require("@octokit/action");
+    const github = require('@actions/github');
     const core = require('@actions/core');
   
-    const octokit = new Octokit();
+    const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+
+    const context = github.context;
+    console.log(context)
+
     const event = process.env.GITHUB_EVENT_NAME
     const eventPayload = require(process.env.GITHUB_EVENT_PATH)
   
@@ -19,7 +23,7 @@ async function main() {
       process.exit(0)
     }
   
-    const checkRuns = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}/check-runs', {
+    const checkRuns = await octokit.rest.('GET /repos/{owner}/{repo}/commits/{ref}/check-runs', {
       owner,
       repo,
       ref: eventPayload.pull_request.base.ref,
