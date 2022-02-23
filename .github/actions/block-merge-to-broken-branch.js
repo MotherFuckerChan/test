@@ -20,13 +20,15 @@ async function main() {
       process.exit(0)
     }
   
-    const checkRuns = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}/check-runs', {
+    const checkRuns = await octokit.rest.checks.listForRef({
       owner,
       repo,
       ref: eventPayload.pull_request.base.ref,
       status: "completed",
       // check_name: "build"
     })
+
+    console.log(checkRuns)
   
     if (checkRuns.length === 0){
       process.exit(0)
