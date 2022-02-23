@@ -17,7 +17,7 @@ async function main() {
   
     console.log(eventPayload)
   
-    if (["main", "master", "development"].indexOf(eventPayload.base.ref) === -1) {
+    if (["main", "master", "development"].indexOf(eventPayload.pull_request.base.ref) === -1) {
       process.exit(0)
     }
   
