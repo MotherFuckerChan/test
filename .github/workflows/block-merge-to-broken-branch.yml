@@ -8,6 +8,7 @@ jobs:
   block-merge:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: sudo apt install tree
       - run: tree
       - uses: actions/setup-node@v1
