@@ -7,10 +7,11 @@ async function main() {
   const eventPayload = require(process.env.GITHUB_EVENT_PATH)
 
 
-  const owner = eventPayload.repository.name
-  const repo = eventPayload.repository.owner.login
+  const repo = eventPayload.repository.name
+  const owner = eventPayload.repository.owner.login
+  const baseRef = eventPayload.pull_request.base.ref
 
-  console.log(eventPayload.repository)
+  console.log({owner, repo, baseRef})
 
   // 1. 获取当前分支 和 author
   // 2. 获取 target 分支的状态
@@ -25,7 +26,7 @@ async function main() {
   const { data: checkRunsInfo } = await octokit.rest.checks.listForRef({
     owner,
     repo,
-    ref: eventPayload.pull_request.base.ref,
+    ref: baseRef,
     status: "completed",
     // check_name: "build"
   })
