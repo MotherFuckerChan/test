@@ -10,6 +10,8 @@ async function main() {
   const owner = eventPayload.repository.name
   const repo = eventPayload.repository.owner.login
 
+  console.log(eventPayload.repository)
+
   // 1. 获取当前分支 和 author
   // 2. 获取 target 分支的状态
   // 3. 获取 broken 的作者
