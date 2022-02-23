@@ -23,7 +23,7 @@ async function main() {
     process.exit(0)
   }
 
-  const deployments = await octokit.rest.repos.listDeployments({
+  const { data: deployments } = await octokit.rest.repos.listDeployments({
     owner,
     repo,
     ref: baseRef,
@@ -39,12 +39,12 @@ async function main() {
 
   deployments.forEach(async deploy => {
     console.log("Deploy Id: ", deploy.id, "==============")
-    const status = await octokit.rest.repos.listDeploymentStatuses({
+    const { data: states }= await octokit.rest.repos.listDeploymentStatuses({
       owner,
       repo,
       deployment_id: deploy.id
     })
-    status.forEach(st => {
+    states.forEach(st => {
       console.log(st.state, " => ", st.target_url)
     })
   })
