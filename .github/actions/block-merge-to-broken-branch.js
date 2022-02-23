@@ -23,20 +23,30 @@ async function main() {
     process.exit(0)
   }
 
-  const { data: checkRunsInfo } = await octokit.rest.checks.listForRef({
+  const deployments = await octokit.rest.repos.listDeployments({
     owner,
     repo,
     ref: baseRef,
-    status: "completed",
+    // status: "completed",
     // check_name: "build"
   })
 
-  if (checkRunsInfo.total_count === 0){
+  console.log("Deployments: ", deployments)
+
+  if (deployments.length === 0){
     process.exit(0)
   }
 
-  checkRunsInfo.check_runs.each(run => {
-    console.log("Run Info: ", run.id, run.name, ", ", run.conclusion)
+  deployments.forEach(async deploy => {
+    console.log("Deploy Id: ", deploy.id, "==============")
+    const status = await octokit.rest.repos.listDeploymentStatuses({
+      owner,
+      repo,
+      deployment_id: deploy.id
+    })
+    status.forEach(st => {
+      console.log(st.state, " => ", st.target_url)
+    })
   })
 
   const checkRun = checkRunsInfo.check_runs[0]
