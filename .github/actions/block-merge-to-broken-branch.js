@@ -4,14 +4,11 @@ async function main() {
   
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
-    const context = github.context;
-    console.log(context)
-
     const event = process.env.GITHUB_EVENT_NAME
     const eventPayload = require(process.env.GITHUB_EVENT_PATH)
   
-    const owner = "UrbanCompass"
-    const repo = "glide-devapp"
+    const owner = "MotherFuckerChan"
+    const repo = "test"
   
     // 1. 获取当前分支 和 author
     // 2. 获取 target 分支的状态
