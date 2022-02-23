@@ -15,8 +15,6 @@ async function main() {
     // 4. 判断 broken 是否由自己造成
     // 5. block merge
   
-    console.log("Pull base", eventPayload.pull_request.base)
-  
     if (["main", "master", "development"].indexOf(eventPayload.pull_request.base.ref) === -1) {
       process.exit(0)
     }
@@ -24,7 +22,7 @@ async function main() {
     const checkRuns = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}/check-runs', {
       owner,
       repo,
-      ref: eventPayload.base.ref,
+      ref: eventPayload.pull_request.base.ref,
       status: "completed",
       // check_name: "build"
     })
