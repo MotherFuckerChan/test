@@ -19,7 +19,7 @@ async function main() {
     branch2commit[branch] = commit
     return commit.sha === eventPayload.sha ? branch : null
   }))).filter(Boolean)
-
+ 
   let prs = []
   for (const branch of branches) {
     for (let page = 1; ; page++ ) {
