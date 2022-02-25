@@ -26,7 +26,7 @@ async function main() {
       const { data: pagedData } = await octokit.rest.pulls.list({
         owner,
         repo,
-        base: branch,
+        base: branch, 
         state: "open",
         per_page: 100,
         page
