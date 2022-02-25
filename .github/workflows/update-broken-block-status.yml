@@ -1,0 +1,16 @@
+name: Update Broken Block Status
+on:
+  status:
+
+jobs:
+  update-pr-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          version: 12
+      - run: npm install @actions/github
+      - run: node .github/actions/update-broken-block-status.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
