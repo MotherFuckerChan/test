@@ -45,7 +45,7 @@ async function main() {
     })
     const filteredRuns = check_runs
       .filter(run => run.name === "branch-broken-check")
-      .filter(() => (commitState === "success") || (commitState === "failure" && pr.user.login !== branch2commit[pr.base.ref].author.login))
+      .filter(() => (commitState === "success") || (commitState === "failure"))
       .slice(0, 1)
     return filteredRuns
   }))).flat()
