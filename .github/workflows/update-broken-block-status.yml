@@ -1,6 +1,6 @@
 name: Update Broken Block Status
 on:
-  status:
+  status
 
 jobs:
   update-pr-status:
