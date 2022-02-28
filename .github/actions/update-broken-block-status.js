@@ -10,7 +10,7 @@ async function main() {
   const commitState = eventPayload.state === "success" ? "success" : "failure"
 
   let branch2commit = {}
-  let branches = (await Promise.all(["master", "development", "staging-infra-china"].map(async branch => {
+  let branches = (await Promise.all(["master"].map(async branch => {
     const { data: { commit }} =  await octokit.rest.repos.getBranch({
       owner,
       repo,
