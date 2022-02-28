@@ -20,7 +20,7 @@ async function main() {
     return commit.sha === eventPayload.sha ? branch : null
   }))).filter(Boolean)
 
-  print("Branches: ", branches)
+  console.log("Branches: ", branches)
 
   let prs = []
   for (const branch of branches) {
@@ -38,7 +38,7 @@ async function main() {
     }
   }
 
-  print("PRs: ", prs)
+  console.log("PRs: ", prs)
 
   const checkRuns = (await Promise.all(prs.map(async pr => {
     const { data: { check_runs } } = await octokit.rest.checks.listForRef({
@@ -46,7 +46,7 @@ async function main() {
       repo,
       ref: pr.head.sha
     })
-    print(check_runs)
+    console.log(check_runs)
     const filteredRuns = check_runs
       .filter(run => run.name === "branch-broken-check")
       .filter(() => (commitState === "success") || (commitState === "failure" && pr.user.login !== branch2commit[pr.base.ref].author.login))
