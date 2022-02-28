@@ -38,7 +38,7 @@ async function main() {
     }
   }
 
-  console.log("PRs: ", prs)
+  console.log("PRs: ", prs.map(pr => pr.id))
 
   const checkRuns = (await Promise.all(prs.map(async pr => {
     const { data: { check_runs } } = await octokit.rest.checks.listForRef({
@@ -46,7 +46,6 @@ async function main() {
       repo,
       ref: pr.head.sha
     })
-    console.log(check_runs)
     const filteredRuns = check_runs
       .filter(run => run.name === "branch-broken-check")
       .filter(() => (commitState === "success") || (commitState === "failure"))
@@ -54,7 +53,10 @@ async function main() {
     return filteredRuns
   }))).flat()
 
+  console.log("Check Runs: ", checkRuns.map(run => `${run.id}:${run.name}`))
+
   checkRuns.forEach(async run => {
+    console.log("update run: ", run.id, commitState)
     await octokit.rest.checks.update({
       owner, 
       repo, 
