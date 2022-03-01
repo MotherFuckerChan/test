@@ -40,7 +40,7 @@ async function main() {
         page
       })
       if (pagedPrs.length === 0) { break }
-      pagedPrs.forEach(pr => {
+      pagedPrs.forEach(async pr => {
         const setFailure = commitState === "failure" && branch2committer[pr.base.ref].login !== pr.user.login 
         await octokit.rest.repos.createCommitStatus({
           repo,
