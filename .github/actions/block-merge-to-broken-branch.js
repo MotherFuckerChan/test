@@ -12,7 +12,7 @@ async function main() {
 
 
   // TODO(zhibing.chen) branches as a input param.
-  if (["main", "master", "development"].indexOf(eventPayload.pull_request.base.ref) === -1) {
+  if (["main", "master", "development", "staging-infra-china"].indexOf(baseRef) === -1) {
     process.exit(0)
   }
 
@@ -28,15 +28,34 @@ async function main() {
 
   const state = states[0]
 
-  const { data: {author: committer}} = await octokit.rest.repos.getCommit({
+  const { data: commit} = await octokit.rest.repos.getCommit({
     owner,
     repo,
     ref: baseRef,
   });
 
+  let committer = null
+  try {
+    const {data: prs} = await octokit.rest.repos.listPullRequestsAssociatedWithCommit({
+      repo,
+      owner,
+      commit_sha: commit.sha
+    })
+    committer = prs[0].user
+  } catch {
+    committer = commit.author
+  }
+
   // never block the user who made the branch broken 
   if (state.state !== "success" && eventPayload.pull_request.user.login !== committer.login) {
-    core.setFailed(`PR was blocked because target branch ${baseRef} was broken/pending(not success). see broken detail ${state.target_url}`)
+    await octokit.rest.repos.createCommitStatus({
+      repo,
+      owner,
+      sha: eventPayload.pull_request.head.ref,
+      state: "failure",
+      context: `${baseRef} Broken`,
+      description: `see ${state.target_url}`
+    })
   }
 }
 
