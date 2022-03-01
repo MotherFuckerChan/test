@@ -29,7 +29,7 @@ async function main() {
     return commit.sha === eventPayload.sha ? branch : null
   }))).filter(Boolean)
 
-  branches.forEach(branch => {
+  branches.forEach(async branch => {
     for (let page = 1; ; page++ ) {
       const { data: pagedPrs } = await octokit.rest.pulls.list({
         owner,
