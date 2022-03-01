@@ -45,7 +45,7 @@ async function main() {
         await octokit.rest.repos.createCommitStatus({
           repo,
           owner,
-          sha: eventPayload.pull_request.head.ref,
+          sha: pr.head.ref,
           state: setFailure ? "failure" : "success",
           context: `${pr.base.ref} Broken`,
           description: `see ${eventPayload.target_url}`
