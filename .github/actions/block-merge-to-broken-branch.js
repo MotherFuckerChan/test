@@ -47,16 +47,16 @@ async function main() {
   }
 
   // never block the user who made the branch broken 
-  if (state.state !== "success" && eventPayload.pull_request.user.login !== committer.login) {
-    await octokit.rest.repos.createCommitStatus({
-      repo,
-      owner,
-      sha: eventPayload.pull_request.head.ref,
-      state: "failure",
-      context: `${baseRef} Broken`,
-      description: `see ${state.target_url}`
-    })
-  }
+  const setFailure = state.state !== "success" && eventPayload.pull_request.user.login !== committer.login
+  console.log("Target Branch is ", state.state)
+  await octokit.rest.repos.createCommitStatus({
+    repo,
+    owner,
+    sha: eventPayload.pull_request.head.ref,
+    state: setFailure ? "failure" : "success",
+    context: `[${baseRef}] check`,
+    description: setFailure ? `broken, see ${state.target_url}` : "passed."
+  })
 }
 
 try {

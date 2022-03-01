@@ -41,14 +41,15 @@ async function main() {
       })
       if (pagedPrs.length === 0) { break }
       pagedPrs.forEach(async pr => {
+        console.log(`Update pr [${pr.id}] status to ${commitState}`)
         const setFailure = commitState === "failure" && branch2committer[pr.base.ref].login !== pr.user.login 
         await octokit.rest.repos.createCommitStatus({
           repo,
           owner,
           sha: pr.head.sha,
           state: setFailure ? "failure" : "success",
-          context: `${pr.base.ref} Broken`,
-          description: `see ${eventPayload.target_url}`
+          context: `[${pr.base.ref}] check`,
+          description: setFailure ? `Broken, see ${eventPayload.target_url}` : "passed."
         })
       })
     }
