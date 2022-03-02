@@ -48,7 +48,7 @@ jobs:
         git branch
         git config user.email "you@example.com"
         git config user.name "Your Name"
-        git merge origin/${GITHUB_HEAD_REF}
+        git merge ${{ github.event.pull_request.head.ref }}
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
