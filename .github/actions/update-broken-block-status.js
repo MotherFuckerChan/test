@@ -48,8 +48,8 @@ async function main() {
           owner,
           sha: pr.head.sha,
           state: setFailure ? "failure" : "success",
-          context: `[${pr.base.ref}] check`,
-          description: setFailure ? `Broken, see ${eventPayload.target_url}` : "passed."
+          context: `[${pr.base.ref}] status`,
+          description: setFailure ? `is broken, so pr blocked.` : "is passed."
         })
       })
     }
