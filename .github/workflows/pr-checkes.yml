@@ -42,10 +42,11 @@ jobs:
         ref: ${{ github.event.pull_request.base.ref }}
     - name: Merge PR locally
       run: |
-        git pull origin ${{ github.event.pull_request.head.ref }}
+        git fetch origin ${{ github.event.pull_request.head.ref }}
         git branch
         git config user.email "you@example.com"
         git config user.name "Your Name"
+        echo "Ready Merge"
         git merge ${{ github.event.pull_request.head.ref }}
     - uses: actions/setup-python@v2
       with:
