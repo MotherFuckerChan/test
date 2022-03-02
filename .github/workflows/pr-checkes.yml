@@ -40,8 +40,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Merge PR locally
       run: |
-        git fetch origin ${GITHUB_BASE_REF}
-        git fetch origin ${GITHUB_HEAD_REF}
+        git fetch origin
         git checkout ${GITHUB_BASE_REF}
         git pull ${GITHUB_BASE_REF}
         git config user.email "you@example.com"
