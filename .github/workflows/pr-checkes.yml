@@ -47,6 +47,7 @@ jobs:
         git config user.email "you@example.com"
         git config user.name "Your Name"
         echo "Ready Merge"
+        echo "git merge origin/${{ github.event.pull_request.head.ref }}"
         git merge origin/${{ github.event.pull_request.head.ref }}
     - uses: actions/setup-python@v2
       with:
