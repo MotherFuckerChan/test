@@ -40,10 +40,16 @@ jobs:
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.base.ref }}
+    - name: Echo info
+      run: |
+        echo "Base is: ${{ github.event.pull_request.base.ref }}"
+        echo "Head is: ${{ github.event.pull_request.head.ref }}"
+        echo "Current branch"
+        run git branch
+
     - name: Merge PR locally
       run: |
         git fetch origin ${{ github.event.pull_request.head.ref }}
-        git branch
         git config user.email "you@example.com"
         git config user.name "Your Name"
         echo "Ready Merge"
