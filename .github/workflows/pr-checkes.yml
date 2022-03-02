@@ -44,8 +44,6 @@ jobs:
       run: |
         echo "Base is: ${{ github.event.pull_request.base.ref }}"
         echo "Head is: ${{ github.event.pull_request.head.ref }}"
-        echo "Current branch"
-        run git branch
 
     - name: Merge PR locally
       run: |
