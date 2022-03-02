@@ -8,29 +8,6 @@ on:
       - synchronize
 
 jobs:
-  branch-broken-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          version: 12
-      - run: npm install @actions/github
-      - run: npm install @actions/core
-      - run: node .github/actions/block-merge-to-broken-branch.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  format-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: UrbanCompass/prchecker@main
-        with:
-          exempt-users: '["wei-hai-compass", "chengjunzhan", "ugodiggi", "mbenedettini", "marianolg", "nathandaonyc"]'
-          check-items: '["body", "tasks"]'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   alembic-conflicts-check:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -78,3 +55,25 @@ jobs:
         echo $head_count
         if [ $head_count != "1" ]; then echo "There has multiple heads, please resolve by following \n\n https://github.com/UrbanCompass/glide-devapp/tree/development/.github/workflows#alembic-conflicts-check !"; echo $heads; exit 1; fi
 
+  branch-broken-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          version: 12
+      - run: npm install @actions/github
+      - run: npm install @actions/core
+      - run: node .github/actions/block-merge-to-broken-branch.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: UrbanCompass/prchecker@main
+        with:
+          exempt-users: '["wei-hai-compass", "chengjunzhan", "ugodiggi", "mbenedettini", "marianolg", "nathandaonyc"]'
+          check-items: '["body", "tasks"]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
