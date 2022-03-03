@@ -1,4 +1,4 @@
-name: PR Checker
+name: alembic-conflicts-check
 on:
   pull_request_target:
     types:
@@ -8,7 +8,7 @@ on:
       - synchronize
 
 jobs:
-  alembic-conflicts-check:
+  :
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
