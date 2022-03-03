@@ -54,8 +54,8 @@ async function main() {
     owner,
     sha: eventPayload.pull_request.head.sha,
     state: setFailure ? "failure" : "success",
-    context: `[${baseRef}] check`,
-    description: setFailure ? `broken, see ${state.target_url}` : "passed."
+    context: `[${baseRef}] status`,
+    description: setFailure ? `is broken, so pr blocked.` : "is passed."
   })
 }
 

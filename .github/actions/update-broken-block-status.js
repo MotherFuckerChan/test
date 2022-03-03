@@ -9,29 +9,21 @@ async function main() {
 
   const commitState = eventPayload.state === "success" ? "success" : "failure"
 
-  let branch2committer = {}
+  let branch2commit = {}
   let branches = (await Promise.all(["master"].map(async branch => {
     const { data: { commit }} =  await octokit.rest.repos.getBranch({
       owner,
       repo,
       branch: branch
     });
-  try {
-    const {data: prs} = await octokit.rest.repos.listPullRequestsAssociatedWithCommit({
-      repo,
-      owner,
-      commit_sha: commit.sha
-    })
-    branch2committer[branch] = prs[0].user
-  } catch {
-    branch2committer[branch] = commit.author
-  }
+    branch2commit[branch] = commit
     return commit.sha === eventPayload.sha ? branch : null
   }))).filter(Boolean)
 
-  branches.forEach(async branch => {
+  let prs = []
+  for (const branch of branches) {
     for (let page = 1; ; page++ ) {
-      const { data: pagedPrs } = await octokit.rest.pulls.list({
+      const { data: pagedData } = await octokit.rest.pulls.list({
         owner,
         repo,
         base: branch,
@@ -39,20 +31,40 @@ async function main() {
         per_page: 100,
         page
       })
-      if (pagedPrs.length === 0) { break }
-      pagedPrs.forEach(async pr => {
-        console.log(`Update pr [${pr.id}] status to ${commitState}`)
-        const setFailure = commitState === "failure" && branch2committer[pr.base.ref].login !== pr.user.login 
-        await octokit.rest.repos.createCommitStatus({
-          repo,
-          owner,
-          sha: pr.head.sha,
-          state: setFailure ? "failure" : "success",
-          context: `[${pr.base.ref}] check`,
-          description: setFailure ? `Broken, see ${eventPayload.target_url}` : "passed."
-        })
-      })
+      if (pagedData.length === 0) { break }
+      prs = prs.concat(pagedData)
     }
+  }
+  console.log(`PRs ready to merge to branch(es) ${branches}:  ${prs.map(pr => pr.id)}`)
+
+  const checkRuns = (await Promise.all(prs.map(async pr => {
+    const { data: { check_runs } } = await octokit.rest.checks.listForRef({
+      owner,
+      repo,
+      ref: pr.head.sha
+    })
+    const filteredRuns = check_runs
+      .filter(run => run.name === "branch-broken-check")
+      .filter(() => (commitState === "success") || (commitState === "failure" && pr.user.login !== branch2commit[pr.base.ref].author.login))
+      .slice(0, 1)
+    return filteredRuns
+  }))).flat()
+
+  checkRuns.forEach(async run => {
+    console.log(`Update Run ${run.id} to status: ${commitState}`)
+    await octokit.rest.checks.update({
+      owner, 
+      repo, 
+      check_run_id: run.id,
+      conclusion: commitState,
+      output: {
+        title: commitState == "failure" ? `Blocking` : "Passed",
+        summary: `Merge are blocked because branch(es) ${branches} were broken.`,
+        text: `broken commit(s): \n ` + branches.map(branch => {
+          return `- [${branch}](${branch2commit[branch].html_url}): [${eventPayload.target_url}](${eventPayload.target_url})`
+        }).join("\n")
+      }
+    })
   })
 }
 
