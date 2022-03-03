@@ -1,4 +1,4 @@
-name: alembic-conflicts-check
+name: pr-alembic-conflicts-check
 on:
   pull_request_target:
     types:

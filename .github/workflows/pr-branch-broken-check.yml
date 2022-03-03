@@ -1,4 +1,4 @@
-name: PR Checker
+name: pr-branch-broken-check
 on:
   pull_request_target:
     types:
@@ -8,7 +8,7 @@ on:
       - synchronize
 
 jobs:
-  branch-broken-check:
+  :
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
