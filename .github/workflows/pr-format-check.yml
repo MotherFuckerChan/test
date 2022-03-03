@@ -8,7 +8,7 @@ on:
       - synchronize
 
 jobs:
-  format-check:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: UrbanCompass/prchecker@main
