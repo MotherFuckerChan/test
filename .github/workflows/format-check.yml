@@ -1,0 +1,18 @@
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: UrbanCompass/prchecker@main
+        with:
+          exempt-users: '["wei-hai-compass", "chengjunzhan", "ugodiggi", "mbenedettini", "marianolg", "nathandaonyc"]'
+          check-items: '["body", "tasks"]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
