@@ -16,16 +16,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.pull_request.base.ref }}
+        ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Merge PR locally
       run: |
-        git fetch origin ${{ github.event.pull_request.head.ref }}
+        git fetch origin ${{ github.event.pull_request.base.ref }}
         git config user.email "you@example.com"
         git config user.name "Your Name"
         echo "Ready Merge"
-        echo "git merge origin/${{ github.event.pull_request.head.ref }}"
-        git merge --no-ff -m "xxx" origin/${{ github.event.pull_request.head.ref }} --allow-unrelated-histories
+        echo "git merge origin/${{ github.event.pull_request.base.ref }}"
+        git merge --no-ff -m "xxx" origin/${{ github.event.pull_request.base.ref }} --allow-unrelated-histories
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
