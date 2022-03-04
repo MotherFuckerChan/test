@@ -25,7 +25,7 @@ jobs:
         git config user.name "Your Name"
         echo "Ready Merge"
         echo "git merge origin/${{ github.event.pull_request.head.ref }}"
-        git merge -m "xxx" origin/${{ github.event.pull_request.head.ref }} --allow-unrelated-histories
+        git merge --no-ff -m "xxx" origin/${{ github.event.pull_request.head.ref }} --allow-unrelated-histories
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
