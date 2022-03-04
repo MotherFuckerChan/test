@@ -20,6 +20,7 @@ jobs:
 
     - name: Merge PR locally
       run: |
+        git fetch origin
         git checkout --progress --force -B ${{ github.event.pull_request.base.ref  }} refs/remotes/origin/${{ github.event.pull_request.base.ref }}
         git config user.email "you@example.com"
         git config user.name "Your Name"
