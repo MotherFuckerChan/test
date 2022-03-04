@@ -18,11 +18,11 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
-    - name: 👄 Read Me Please 👄
+    - name: 👉 Read Me Please 👈
       run: |
         echo "  "
         echo "*******************"
-        echo "if you got [Merge Conflicts]"
+        echo "if you got [Merge Conflicts] 👅"
         echo "Please rebase the latest base branch and push again(using -f)."
         echo "  "
         echo "$ git fetch origin ${{ github.event.pull_request.base.ref }}"
