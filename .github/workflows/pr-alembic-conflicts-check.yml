@@ -16,13 +16,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.pull_request.head.ref }}
+        ref: ${{ github.event.pull_request.base.ref }}
+
+    - name: Show Document
+      run: |
+        echo "  "
+        echo "*******************"
+        echo "if you got [Merge Conflicts]"
+        echo "Please rebase the latest base branch and push again(using -f)."
+        echo "$ git fetch origin ${{ github.event.pull_request.base.ref }}"
+        echo "$ git rebase origin/${{ github.event.pull_request.base.ref }}"
+        echo "$ git push ${{  github.event.pull_request.head.ref }} -f"
+        echo "*******************"
+        echo "   "
 
     - name: Merge PR locally
       run: |
-        git fetch origin ${{ github.event.pull_request.base.ref }}
-        git rebase origin/${{ github.event.pull_request.base.ref }}
-
+        git fetch origin ${{ github.event.pull_request.head.ref }}
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
+        git merge -m "xxx" origin/${{ github.event.pull_request.head.ref }} --allow-unrelated-histories
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
