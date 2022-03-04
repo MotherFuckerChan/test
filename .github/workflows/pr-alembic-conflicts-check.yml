@@ -18,7 +18,7 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
-    - name: Show Document
+    - name: 👄 Read Me Please 👄
       run: |
         echo "  "
         echo "*******************"
@@ -28,6 +28,7 @@ jobs:
         echo "$ git fetch origin ${{ github.event.pull_request.base.ref }}"
         echo "$ git rebase origin/${{ github.event.pull_request.base.ref }}"
         echo "$ git push ${{  github.event.pull_request.head.ref }} -f"
+        echo "   "
         echo "*******************"
         echo "   "
 
