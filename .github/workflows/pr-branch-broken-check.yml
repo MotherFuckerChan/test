@@ -15,8 +15,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           version: 12
-      - run: npm install @actions/github
-      - run: npm install @actions/core
+      - run: npm install --registry=https://registry.npmjs.org @actions/github
+      - run: npm install --registry=https://registry.npmjs.org @actions/core
       - run: node .github/actions/block-merge-to-broken-branch.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

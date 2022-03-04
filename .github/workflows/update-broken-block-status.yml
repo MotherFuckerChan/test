@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           version: 12
-      - run: npm install @actions/github
+      - run: npm install --registry=https://registry.npmjs.org @actions/github
       - run: node .github/actions/update-broken-block-status.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
