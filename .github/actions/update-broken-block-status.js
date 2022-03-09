@@ -10,6 +10,7 @@ async function main() {
 
   // only care of "push drone push"
   if (eventPayload.context !== 'continuous-integration/drone/push') {
+    console.log("Event not trigger by 'continuous-integration/drone/push', is: ", eventPayload.context)
     return
   }
 
