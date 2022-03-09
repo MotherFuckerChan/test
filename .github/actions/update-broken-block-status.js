@@ -7,10 +7,17 @@ async function main() {
   const repo = eventPayload.repository.name
   const owner = eventPayload.repository.owner.login
 
+
+  // only care of "push drone push"
+  if (eventPayload.context !== 'continuous-integration/drone/push') {
+    return
+  }
+
+  console.log("Event state: ", eventPayload.state)
   const commitState = eventPayload.state === "success" ? "success" : "failure"
 
   let branch2committer = {}
-  let branches = (await Promise.all(["master"].map(async branch => {
+  let branches = (await Promise.all(["development"].map(async branch => {
     const { data: { commit }} =  await octokit.rest.repos.getBranch({
       owner,
       repo,
@@ -42,7 +49,7 @@ async function main() {
       if (pagedPrs.length === 0) { break }
       pagedPrs.forEach(async pr => {
         console.log(`Update pr [${pr.id}] status to ${commitState}`)
-        const setFailure = commitState === "failure"
+        const setFailure = commitState === "failure" && branch2committer[pr.base.ref].login !== pr.user.login
         await octokit.rest.repos.createCommitStatus({
           repo,
           owner,
@@ -60,4 +67,4 @@ try {
   main()
 } catch (e){
   core.setFailed(e)
-}
+} 

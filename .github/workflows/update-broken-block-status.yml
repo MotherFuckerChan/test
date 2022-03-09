@@ -1,16 +1,17 @@
-name: Update Broken Block Status
+name: Update PR Broken Block Status
 on:
   status
 
 jobs:
-  update-pr-status:
+  update-pr-broken-block-status:
+    if: github.event.context === "continuous-integration/drone/push"
+    if: ${{ contains(github.event.branches, "development") }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           version: 12
-      - run: npm init -f
       - run: npm install --registry=https://registry.npmjs.org @actions/github
       - run: node .github/actions/update-broken-block-status.js
         env:

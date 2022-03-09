@@ -12,7 +12,7 @@ async function main() {
 
 
   // TODO(zhibing.chen) branches as a input param.
-  if (["main", "master", "development", "staging-infra-china"].indexOf(baseRef) === -1) {
+  if (["development"].indexOf(baseRef) === -1) {
     process.exit(0)
   }
 
@@ -22,11 +22,14 @@ async function main() {
     ref: baseRef
   })
 
-  if (states.length === 0){
+  // only care of "drone/push"
+  const filteredStates = states.filter(state => state.context === "continuous-integration/drone/push")
+
+  if (filteredStates.length === 0){
     process.exit(0)
   }
 
-  const state = states[0]
+  const state = filteredStates[0]
 
   const { data: commit} = await octokit.rest.repos.getCommit({
     owner,
@@ -54,8 +57,8 @@ async function main() {
     owner,
     sha: eventPayload.pull_request.head.sha,
     state: setFailure ? "failure" : "success",
-    context: `[${baseRef}] status`,
-    description: setFailure ? `is broken, so pr blocked.` : "is passed."
+    context: `branch [${baseRef}]`,
+    description: setFailure ? `is broken, so pr blocked. see: url` : "is passed."
   })
 }
 
