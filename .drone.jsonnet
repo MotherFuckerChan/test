@@ -1,8 +1,7 @@
-[
 {
   "kind": "pipeline",
   "type": "docker",
-  "name": "branch",
+  "name": "Test",
   "trigger": {
     "event": [
       "pull_request",
@@ -26,4 +25,3 @@
     }
   ]
 }
-]
