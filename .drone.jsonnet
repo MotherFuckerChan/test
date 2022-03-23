@@ -5,7 +5,8 @@
   "name": "branch",
   "trigger": {
     "event": [
-      "pull_request"
+      "pull_request",
+      "push"
     ],
     "branch": "development"
   },
