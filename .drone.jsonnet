@@ -11,6 +11,12 @@
   },
   "steps": [
     {
+      "name": "Echo",
+      "commands": [
+          "echo '.MD Changed'"
+      ],
+    },
+    {
       "name": "judge",
       "commands": [
           "echo 'In judge'"
@@ -21,11 +27,5 @@
           },
       },
     },
-    {
-      "name": "Echo",
-      "commands": [
-          "echo '.MD Changed'"
-      ],
-    }
   ]
 }
