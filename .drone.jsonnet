@@ -12,7 +12,9 @@
   "steps": [
     {
       "name": "judge",
-      "command": "echo 'In judge'",
+      "commands": [
+          "echo 'In judge'"
+      ],
       "when": {
           "paths": {
               "exclude": ["README.md"],
@@ -21,7 +23,9 @@
     },
     {
       "name": "Echo",
-      "command": "echo '.MD Changed'",
+      "commands": [
+          "echo '.MD Changed'"
+      ],
     }
   ]
 }
