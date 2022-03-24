@@ -2,7 +2,6 @@
   "kind": "pipeline",
   "type": "docker",
   "name": "Test",
-  "image": "python:3.6.5",
   "trigger": {
     "event": [
       "pull_request",
@@ -12,12 +11,14 @@
   "steps": [
     {
       "name": "Echo",
+      "image": "daocloud.io/library/nginx",
       "commands": [
           "echo '.MD Changed'"
       ],
     },
     {
       "name": "judge",
+      "image": "daocloud.io/library/nginx",
       "commands": [
           "echo 'In judge'"
       ],
