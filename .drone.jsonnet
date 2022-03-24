@@ -23,7 +23,7 @@
           "echo 'In judge'"
       ],
       "when": {
-        "path": {
+        "paths": {
           "include": ["fffREADME.md"]
         }
       }
