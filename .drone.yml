@@ -1,13 +1,14 @@
+---
 kind: pipeline
-type: docker
-name: default
+name: readme
+
+trigger:
+  paths:
+    include:
+    - README.md
 
 steps:
-- name: backend
-  image: golang
+- name: message
+  image: busybox
   commands:
-    - echo "Hello, World!"
-  when:
-    paths:
-      include:
-        - README.md
+  - echo "README.md was changed”
