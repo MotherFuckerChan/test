@@ -20,7 +20,12 @@
       "name": "judge",
       "commands": [
           "echo 'In judge'"
-      ]
+      ],
+      "when": {
+        "path": {
+          "exclude": ["README.md"]
+        }
+      }
     }
   ]
 }
