@@ -2,12 +2,12 @@
   "kind": "pipeline",
   "type": "docker",
   "name": "Test",
+  "image": "python:3.6.5",
   "trigger": {
     "event": [
       "pull_request",
       "push"
     ],
-    "branch": "development"
   },
   "steps": [
     {
