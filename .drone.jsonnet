@@ -24,7 +24,7 @@
       ],
       "when": {
         "path": {
-          "exclude": ["README.md"]
+          "include": ["fffREADME.md"]
         }
       }
     }
