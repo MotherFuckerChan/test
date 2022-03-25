@@ -4,7 +4,7 @@ name: readme
 
 trigger:
   paths:
-    include:
+    exclude:
     - README.md
     - .drone.jsonnet
 
