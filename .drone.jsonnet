@@ -24,7 +24,7 @@
       ],
       "when": {
         "paths": {
-          "include": ["fffREADME.md"]
+          "include": ["README.md"]
         }
       }
     }
