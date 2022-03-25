@@ -5,7 +5,7 @@ name: readme
 trigger:
   paths:
     exclude:
-    - README.md
+    - "*.md"
     - .drone.jsonnet
 
 steps:
