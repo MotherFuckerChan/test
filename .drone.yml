@@ -6,7 +6,7 @@ trigger:
   paths:
     include:
     - README.md
-    - *.jsonnet
+    - .drone.jsonnet
 
 steps:
 - name: message
