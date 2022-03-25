@@ -2,7 +2,3 @@
   
 gg
 gg
- 
-gg
- 
-gdg
