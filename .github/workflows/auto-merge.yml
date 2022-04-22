@@ -1,4 +1,4 @@
-name: hotfix-helper
+name: auto-merge-pr
 on:
   schedule:
     - cron: "* * * * *"
