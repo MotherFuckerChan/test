@@ -55,6 +55,7 @@ async function autoCreatePr() {
         title: `HotFix Helper - Auto merge ${head} into ${base}`,
         body: prBody,
     })
+
     await octikit.rest.issues.addLabels({
         owner, repo,
         issue_number: pr.id,
