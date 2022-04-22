@@ -1,7 +1,7 @@
 name: auto-merge-pr
 on:
   schedule:
-    - cron: '*/1 * * * *'
+    - cron: "*/1 * * * *"
 
 jobs:
   merge-pr:
@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          version: 12
+          node-version: 16
       - run: npm install --registry=https://registry.npmjs.org @actions/github
       - run: npm install --registry=https://registry.npmjs.org @actions/core
       - run: node -e 'require("./.github/actions/auto-pr-and-merge").autoMergePr()'
