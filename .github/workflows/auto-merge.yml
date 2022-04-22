@@ -14,7 +14,6 @@ jobs:
         with:
           node-version: 16
       - run: npm install --registry=https://registry.npmjs.org @actions/github
-      - run: npm install --registry=https://registry.npmjs.org @actions/core
       - run: node -e 'require("./.github/actions/auto-pr-and-merge").autoMergePr()'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

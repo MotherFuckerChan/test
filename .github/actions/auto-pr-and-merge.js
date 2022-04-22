@@ -1,5 +1,4 @@
 const github = require('@actions/github');
-const core = require('@actions/core');
 const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/")  // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
 
@@ -60,7 +59,7 @@ async function autoCreatePr() {
         owner, repo,
         issue_number: pr.id,
         labels: [
-            { name: label}
+            label
         ]
     })
 }
