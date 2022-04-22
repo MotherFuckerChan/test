@@ -1,6 +1,7 @@
+name: hotfix-helper
 on:
   schedule:
-    - corn: "* * * * *"
+    - cron: "* * * * *"
 
 jobs:
   merge-pr:
