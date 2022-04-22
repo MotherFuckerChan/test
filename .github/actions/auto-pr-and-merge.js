@@ -54,10 +54,11 @@ async function autoCreatePr() {
         title: `HotFix Helper - Auto merge ${head} into ${base}`,
         body: prBody,
     })
+    console.log(pr)
 
     await octokit.rest.issues.addLabels({
         owner, repo,
-        issue_number: pr.id,
+        issue_number: pr.number,
         labels: [
             label
         ]
@@ -74,7 +75,7 @@ async function autoMergePr() {
     successPrs.forEach(async pr => {
         const {data: mergeResult } = await octokit.rest.pulls.merge({
             owner, repo, 
-            pull_number: pr.id
+            pull_number: pr.number
         })
         // notify slack
     })
