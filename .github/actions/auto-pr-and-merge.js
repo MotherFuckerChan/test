@@ -43,7 +43,7 @@ Check at least 1
 
 
 async function autoCreatePr() {
-    const { data: existsPrs } = octokit.rest.pulls.list({
+    const { data: existsPrs } = await octokit.rest.pulls.list({
         owner, repo, state: "open", head, base
     })
     if (existsPrs.length > 0) {
