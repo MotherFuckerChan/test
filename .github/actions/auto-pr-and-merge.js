@@ -56,7 +56,7 @@ async function autoCreatePr() {
         body: prBody,
     })
 
-    await octikit.rest.issues.addLabels({
+    await octokit.rest.issues.addLabels({
         owner, repo,
         issue_number: pr.id,
         labels: [
