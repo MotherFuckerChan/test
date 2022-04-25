@@ -21,7 +21,7 @@ jobs:
           timeout_seconds: 45
           max_attempts: 3
           retry_on: error
-          command: npm install --registry=https://registry.npmjs.org @actions/github
+          command: npm instal --regstry=https://registry.npmjs.org @actions/github
       - run: npm install --registry=https://registry.npmjs.org @actions/core
       - run: node .github/actions/block-merge-to-broken-branch.js
         env:
