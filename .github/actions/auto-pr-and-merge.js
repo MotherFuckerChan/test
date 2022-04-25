@@ -72,7 +72,9 @@ async function autoMergePr() {
     const {data: {items: successPrs }} = await octokit.rest.search.issuesAndPullRequests({
         q: q + " status:success"
     })
+    console.log("success prs: ", successPrs)
     successPrs.forEach(async pr => {
+        console.log("Ready merge: ", pr.number)
         const {data: mergeResult } = await octokit.rest.pulls.merge({
             owner, repo, 
             pull_number: pr.number
@@ -83,11 +85,13 @@ async function autoMergePr() {
     const {data: {items: failurePrs }} = await octokit.rest.search.issuesAndPullRequests({
         q: q + " status:failure"
     })
+    console.log("failer prs: ", failurePrs)
     failurePrs.forEach(async pr => {
         // notify slack
+        console.log("US/CN Label: ", pr.number)
         await octikit.rest.issues.addLabels({
             owner, repo,
-            issue_number: pr.id,
+            issue_number: pr.number,
             labels: [
                 { name: "US/CN Review"}
             ]
