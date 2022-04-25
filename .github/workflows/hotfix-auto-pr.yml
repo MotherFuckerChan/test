@@ -1,11 +1,11 @@
-name: hot-fix-creator
+name: hotfix-pr-creator
 on:
   push:
     branches:
       - master
 
 jobs:
-  create-pr:
+  hotfix-auto-create-pr:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job

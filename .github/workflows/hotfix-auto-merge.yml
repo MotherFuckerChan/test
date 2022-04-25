@@ -1,4 +1,4 @@
-name: hotfix-merger
+name: hotfix-pr-merger
 on:
   schedule:
     - cron: "7,27,47 * * * *"
@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  merge-pr:
+  hotfix-auto-merge-pr:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job

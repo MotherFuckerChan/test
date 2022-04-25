@@ -93,7 +93,7 @@ async function autoMergePr() {
             owner, repo,
             issue_number: pr.number,
             labels: [
-                { name: "Hotfix: auto merge failure"}
+                "Hotfix: auto merge failure"
             ]
         })
     })
