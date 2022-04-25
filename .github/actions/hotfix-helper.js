@@ -54,7 +54,7 @@ async function autoCreatePr() {
         title: `HotFix Helper - Auto merge ${head} into ${base}`,
         body: prBody,
     })
-    console.log(pr)
+    console.log(`Created new pr: ${pr.number}`)
 
     await octokit.rest.issues.addLabels({
         owner, repo,
@@ -72,7 +72,7 @@ async function autoMergePr() {
     const {data: {items: successPrs }} = await octokit.rest.search.issuesAndPullRequests({
         q: q + " status:success"
     })
-    console.log("success prs: ", successPrs)
+    console.log("success prs: ", successPrs.map(pr => pr.number))
     successPrs.forEach(async pr => {
         console.log("Ready merge: ", pr.number)
         const {data: mergeResult } = await octokit.rest.pulls.merge({
@@ -85,15 +85,15 @@ async function autoMergePr() {
     const {data: {items: failurePrs }} = await octokit.rest.search.issuesAndPullRequests({
         q: q + " status:failure"
     })
-    console.log("failer prs: ", failurePrs)
+    console.log("failer prs: ", failurePrs.map(pr => pr.number))
     failurePrs.forEach(async pr => {
         // notify slack
-        console.log("US/CN Label: ", pr.number)
-        await octikit.rest.issues.addLabels({
+        console.log("Hotfix: auto merge failure: ", pr.number)
+        await octokit.rest.issues.addLabels({
             owner, repo,
             issue_number: pr.number,
             labels: [
-                { name: "US/CN Review"}
+                { name: "Hotfix: auto merge failure"}
             ]
         })
     })
