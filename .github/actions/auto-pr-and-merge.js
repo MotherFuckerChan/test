@@ -67,7 +67,7 @@ async function autoCreatePr() {
 
 async function autoMergePr() {
     // https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests#search-only-issues-or-pull-requests
-    const q = `is:pr is:open repo:${owner}/${repo} draft:false label:"${label} status:success"`
+    const q = `is:pr is:open repo:${owner}/${repo} draft:false label:"${label}"`
 
     const {data: {items: successPrs }} = await octokit.rest.search.issuesAndPullRequests({
         q: q + " status:success"
