@@ -1,5 +1,4 @@
 const github = require('@actions/github');
-const core = require('@actions/core');
 const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/")  // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
 
@@ -43,7 +42,7 @@ Check at least 1
 
 
 async function autoCreatePr() {
-    const { data: existsPrs } = octokit.rest.pulls.list({
+    const { data: existsPrs } = await octokit.rest.pulls.list({
         owner, repo, state: "open", head, base
     })
     if (existsPrs.length > 0) {
@@ -55,11 +54,13 @@ async function autoCreatePr() {
         title: `HotFix Helper - Auto merge ${head} into ${base}`,
         body: prBody,
     })
-    await octikit.rest.issues.addLabels({
+    console.log(pr)
+
+    await octokit.rest.issues.addLabels({
         owner, repo,
-        issue_number: pr.id,
+        issue_number: pr.number,
         labels: [
-            { name: label}
+            label
         ]
     })
 }
@@ -74,7 +75,7 @@ async function autoMergePr() {
     successPrs.forEach(async pr => {
         const {data: mergeResult } = await octokit.rest.pulls.merge({
             owner, repo, 
-            pull_number: pr.id
+            pull_number: pr.number
         })
         // notify slack
     })

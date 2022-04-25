@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16
       - run: npm install --registry=https://registry.npmjs.org @actions/github
-      - run: npm install --registry=https://registry.npmjs.org @actions/core
       - run: node -e 'require("./.github/actions/auto-pr-and-merge").autoMergePr()'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
