@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install --registry=https://registry.npmjs.org @actions/github
+      - run: npm install --registry=https://registry.npmjs.org axios
       - run: node -e 'require("./.github/actions/hotfix-helper").autoMergePr()'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
