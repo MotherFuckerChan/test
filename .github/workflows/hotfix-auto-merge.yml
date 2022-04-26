@@ -1,11 +1,13 @@
-name: auto-create-pr
+name: hotfix-pr-merger
 on:
-  push:
-    branches:
-      - master
+  schedule:
+    - cron: "7,27,47 * * * *"
+  release:
+    types: [published]
+
 
 jobs:
-  create-pr:
+  hotfix-auto-merge-pr:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -15,6 +17,8 @@ jobs:
         with:
           node-version: 16
       - run: npm install --registry=https://registry.npmjs.org @actions/github
-      - run: node -e 'require("./.github/actions/auto-pr-and-merge").autoCreatePr()'
+      - run: npm install --registry=https://registry.npmjs.org axios
+      - run: node -e 'require("./.github/actions/hotfix-helper").autoMergePr()'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_BOTS: ${{ secrets.GLIDE_TM_INFRA_PR_CLASK_BOTS }}
