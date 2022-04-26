@@ -70,7 +70,7 @@ async function autoCreatePr() {
         owner,
         repo,
         state: "open",
-        head: `${owner}:${base}`,
+        head: `${owner}:${head}`,
         base,
     });
     if (existsPrs.length > 0) {
