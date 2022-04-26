@@ -1,11 +1,12 @@
-const github = require('@actions/github');
-const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/")  // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-
+const github = require("@actions/github");
+const axios = require("axios").default;
+const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/"); // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
 
 const head = "master";
 const base = "development";
 const label = "hot-fix helper created";
+const slackBots = process.env.GLIDE_TM_INFRA_PR_CLASK_BOTS.split(",")
 
 const prBody = `
 ## Description
@@ -40,65 +41,134 @@ Check at least 1
 - [x] Did you check if [Monitoring and Rollback Plan](#Monitoring-and-Rollback-Plan) is applicable and fill it if so?
 `;
 
+function sendSlackMsg(url, msg) {
+    axios.post(
+        url, 
+        {
+            blocks: [
+                {
+                    type: "section",
+                    text: {
+                        type: "mrkdwn",
+                        text: "*Hot-fix Helper*",
+                    },
+                },
+                {
+                    type: "section",
+                    text: {
+                        type: "mrkdwn",
+                        text: msg
+                    },
+                },
+            ],
+        }
+    );
+}
 
 async function autoCreatePr() {
     const { data: existsPrs } = await octokit.rest.pulls.list({
-        owner, repo, state: "open", head: `${owner}:${base}`, base
-    })
+        owner,
+        repo,
+        state: "open",
+        head: `${owner}:${base}`,
+        base,
+    });
     if (existsPrs.length > 0) {
-        console.log(`PR [${head}] -> [${base}] exists ${existsPrs.map(pr => pr.number)}, skip!`)
-        return
+        console.log(
+            `PR [${head}] -> [${base}] exists ${existsPrs.map(
+                (pr) => pr.number
+            )}, skip!`
+        );
+        return;
     }
     const { data: pr } = await octokit.rest.pulls.create({
-        owner, repo, head, base, 
+        owner,
+        repo,
+        head,
+        base,
         title: `HotFix Helper - Auto merge ${head} into ${base}`,
         body: prBody,
-    })
-    console.log(`Created new pr: ${pr.number}`)
+    });
+    console.log(`Created new pr: ${pr.number}`);
 
     await octokit.rest.issues.addLabels({
-        owner, repo,
+        owner,
+        repo,
         issue_number: pr.number,
-        labels: [
-            label
-        ]
-    })
+        labels: [label],
+    });
 }
 
 async function autoMergePr() {
     // https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests#search-only-issues-or-pull-requests
-    const q = `is:pr is:open repo:${owner}/${repo} draft:false label:"${label}"`
+    const q = `is:pr is:open repo:${owner}/${repo} draft:false label:"${label}"`;
 
-    const {data: {items: successPrs }} = await octokit.rest.search.issuesAndPullRequests({
-        q: q + " status:success"
-    })
-    console.log("success prs: ", successPrs.map(pr => pr.number))
-    successPrs.forEach(async pr => {
-        console.log("Ready merge: ", pr.number)
-        const {data: mergeResult } = await octokit.rest.pulls.merge({
-            owner, repo, 
-            pull_number: pr.number
+    const {
+        data: { items: successPrs },
+    } = await octokit.rest.search.issuesAndPullRequests({
+        q: q + " status:success",
+    });
+    console.log(
+        "success prs: ",
+        successPrs.map((pr) => pr.number)
+    );
+    successPrs.forEach(async (pr) => {
+        console.log("Ready merge: ", pr.number);
+        const { data: mergeResult } = await octokit.rest.pulls.merge({
+            owner,
+            repo,
+            pull_number: pr.number,
+        });
+        console.log(`Notify Slack merge success to ${slackBots}`);
+        slackBots.forEach(bot => {
+            sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failure. Please check. :pleading_face:`)
         })
-        // notify slack
-    })
+    });
 
-    const {data: {items: failurePrs }} = await octokit.rest.search.issuesAndPullRequests({
-        q: q + " status:failure"
-    })
-    console.log("failer prs: ", failurePrs.map(pr => pr.number))
-    failurePrs.forEach(async pr => {
-        // notify slack
-        console.log("Hotfix: auto merge failure: ", pr.number)
+    const {
+        data: { items: failurePrs },
+    } = await octokit.rest.search.issuesAndPullRequests({
+        q: q + " status:failure",
+    });
+    console.log(
+        "failer prs: ",
+        failurePrs.map((pr) => pr.number)
+    );
+    failurePrs.forEach(async (pr) => {
+        console.log("add label [Hotfix: auto merge failure] to: ", pr.number);
         await octokit.rest.issues.addLabels({
-            owner, repo,
+            owner,
+            repo,
             issue_number: pr.number,
-            labels: [
-                "Hotfix: auto merge failure"
-            ]
-        })
-    })
+            labels: ["Hotfix: auto merge failure"],
+        });
+        const { data: labels } = await octokit.rest.issues.listLabelsOnIssue({
+            owner,
+            repo,
+            issue_number: pr.number,
+        });
+        const sentSlackLabel = "Hotfix: Sent Slack";
+        const needNotifyFailure = labels.filter((label) => {
+            label.name == sentSlackLabel;
+        }).length === 0
+
+        if (needNotifyFailure) {
+            console.log(`Notify Slack failure to ${slackBots}`);
+            slackBots.forEach(bot => {
+                sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failure. Please check. :pleading_face:`)
+            })
+            console.log(`Mark label of [${sentSlackLabel}]`);
+            await octokit.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: pr.number,
+                labels: [sentSlackLabel],
+            });
+        }
+    });
 }
 
 module.exports = {
-    autoCreatePr, autoMergePr
-}
+    autoCreatePr,
+    autoMergePr,
+};
