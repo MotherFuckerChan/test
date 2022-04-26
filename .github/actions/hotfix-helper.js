@@ -121,7 +121,7 @@ async function autoMergePr() {
         });
         console.log(`Notify Slack merge success to ${slackBots}`);
         slackBots.forEach(bot => {
-            sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failure. Please check. :pleading_face:`)
+            sendSlackMsg(bot, `:white_check_mark: Auto Merged <${pr.html_url}|PR ${pr.number}> failure. Please check. :blob-clap::blob-clap::blob-clap:`)
         })
     });
 
