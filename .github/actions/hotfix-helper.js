@@ -6,7 +6,7 @@ const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/"); // https://docs.
 const head = "master";
 const base = "development";
 const label = "hot-fix helper created";
-const slackBots = process.env.GLIDE_TM_INFRA_PR_CLASK_BOTS.split(",")
+const slackBots = process.env.SLACK_BOTS ? process.env.SLACK_BOTS.split(",") : []
 
 const prBody = `
 ## Description
