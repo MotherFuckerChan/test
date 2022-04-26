@@ -135,12 +135,12 @@ async function autoMergePr() {
         failurePrs.map((pr) => pr.number)
     );
     failurePrs.forEach(async (pr) => {
-        console.log("add label [Hotfix: auto merge failure] to: ", pr.number);
+        console.log("add label [Hotfix: auto merge failed] to: ", pr.number);
         await octokit.rest.issues.addLabels({
             owner,
             repo,
             issue_number: pr.number,
-            labels: ["Hotfix: auto merge failure"],
+            labels: ["Hotfix: auto merge failed"],
         });
         const { data: labels } = await octokit.rest.issues.listLabelsOnIssue({
             owner,
@@ -148,6 +148,7 @@ async function autoMergePr() {
             issue_number: pr.number,
         });
         const sentSlackLabel = "Hotfix: Sent Slack";
+        console.log(`Pr labels is: ${labels}`)
         const needNotifyFailure = labels.filter((label) => {
             label.name == sentSlackLabel;
         }).length === 0
@@ -155,7 +156,7 @@ async function autoMergePr() {
         if (needNotifyFailure) {
             console.log(`Notify Slack failure to ${slackBots}`);
             slackBots.forEach(bot => {
-                sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failure. Please check. :pleading_face:`)
+                sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failed. Please check. :pleading_face:`)
             })
             console.log(`Mark label of [${sentSlackLabel}]`);
             await octokit.rest.issues.addLabels({
