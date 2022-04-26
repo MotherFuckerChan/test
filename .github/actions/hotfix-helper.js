@@ -148,9 +148,9 @@ async function autoMergePr() {
             issue_number: pr.number,
         });
         const sentSlackLabel = "Hotfix: Sent Slack";
-        console.log(`Pr labels is: ${labels}`)
+        console.log(`Pr labels is: ${labels.map(label => label.name)}`)
         const needNotifyFailure = labels.filter((label) => {
-            label.name == sentSlackLabel;
+            label.name === sentSlackLabel;
         }).length === 0
 
         if (needNotifyFailure) {
