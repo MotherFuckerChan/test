@@ -5,7 +5,7 @@ const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/"); // https://docs.
 
 const head = "master";
 const base = "development";
-const label = "hot-fix helper created";
+const label = "Hotfix-Helper: created";
 const slackBots = process.env.SLACK_BOTS ? process.env.SLACK_BOTS.split(",") : []
 
 const prBody = `
@@ -135,19 +135,19 @@ async function autoMergePr() {
         failurePrs.map((pr) => pr.number)
     );
     failurePrs.forEach(async (pr) => {
-        console.log("add label [Hotfix: auto merge failed] to: ", pr.number);
+        console.log("add label [Hotfix-Helper: merge failed] to: ", pr.number);
         await octokit.rest.issues.addLabels({
             owner,
             repo,
             issue_number: pr.number,
-            labels: ["Hotfix: auto merge failed"],
+            labels: ["Hotfix-Helper: merge failed"],
         });
         const { data: labels } = await octokit.rest.issues.listLabelsOnIssue({
             owner,
             repo,
             issue_number: pr.number,
         });
-        const sentSlackLabel = "Hotfix: Sent Slack";
+        const sentSlackLabel = "Hotfix-Helper: Sent Slack";
         console.log(`Pr labels is: ${labels.map(label => label.name)}`)
         const needNotifyFailure = labels.filter((label) => 
             label.name === sentSlackLabel
