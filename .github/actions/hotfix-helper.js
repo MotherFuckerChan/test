@@ -159,10 +159,10 @@ async function autoMergePr() {
         // but we just care about the latest run
         let checkedNames = new Set()
         check_runs = check_runs.filter(run => {
-            if (existCheckRunNames.has(run.name)) {
+            if (checkedNames.has(run.name)) {
                 return false
             }
-            existCheckRunNames.add(run.name)
+            checkedNames.add(run.name)
             return true
         })
 
