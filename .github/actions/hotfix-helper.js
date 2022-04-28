@@ -158,7 +158,7 @@ async function autoMergePr() {
         // check run may run multiple names with the same name
         // but we just care about the latest run
         let checkedNames = new Set()
-        check_runs = check_runsk.filter(run => {
+        check_runs = check_runs.filter(run => {
             if (existCheckRunNames.has(run.name)) {
                 return false
             }
