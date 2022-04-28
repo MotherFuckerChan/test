@@ -99,72 +99,76 @@ async function autoCreatePr() {
     });
 }
 
-async function autoMergePr() {
-    // https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests#search-only-issues-or-pull-requests
-    const q = `is:pr is:open repo:${owner}/${repo} draft:false label:"${label}"`;
-
-    const {
-        data: { items: successPrs },
-    } = await octokit.rest.search.issuesAndPullRequests({
-        q: q + " status:success",
+async function processFailurePr(pr) {
+    console.log("add label [Hotfix-Helper: merge failed] to: ", pr.number);
+    await octokit.rest.issues.addLabels({
+        owner,
+        repo,
+        issue_number: pr.number,
+        labels: ["Hotfix-Helper: merge failed"],
     });
-    console.log(
-        "success prs: ",
-        successPrs.map((pr) => pr.number)
-    );
-    successPrs.forEach(async (pr) => {
-        console.log("Ready merge: ", pr.number);
-        const { data: mergeResult } = await octokit.rest.pulls.merge({
-            owner,
-            repo,
-            pull_number: pr.number,
-        });
-        console.log(`Notify Slack merge success to ${slackBots}`);
+    const { data: labels } = await octokit.rest.issues.listLabelsOnIssue({
+        owner,
+        repo,
+        issue_number: pr.number,
+    });
+    const sentSlackLabel = "Hotfix-Helper: Sent Slack";
+    console.log(`Pr labels is: ${labels.map(label => label.name)}`)
+    const needNotifyFailure = labels.filter((label) => 
+        label.name === sentSlackLabel
+    ).length === 0
+
+    if (needNotifyFailure) {
+        console.log(`Notify Slack failure to ${slackBots}`);
         slackBots.forEach(bot => {
-            sendSlackMsg(bot, `:white_check_mark: Auto Merged <${pr.html_url}|PR ${pr.number}>. :blob-clap::blob-clap::blob-clap:`)
+            sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failed. Please check. :pleading_face:`)
         })
-    });
-
-    const {
-        data: { items: failurePrs },
-    } = await octokit.rest.search.issuesAndPullRequests({
-        q: q + " status:failure",
-    });
-    console.log(
-        "failer prs: ",
-        failurePrs.map((pr) => pr.number)
-    );
-    failurePrs.forEach(async (pr) => {
-        console.log("add label [Hotfix-Helper: merge failed] to: ", pr.number);
+        console.log(`Mark label of [${sentSlackLabel}]`);
         await octokit.rest.issues.addLabels({
             owner,
             repo,
             issue_number: pr.number,
-            labels: ["Hotfix-Helper: merge failed"],
+            labels: [sentSlackLabel],
         });
-        const { data: labels } = await octokit.rest.issues.listLabelsOnIssue({
+    }
+}
+
+async function autoMergePr() {
+    // https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests#search-only-issues-or-pull-requests
+    const q = `is:pr is:open repo:${owner}/${repo} draft:false label:"${label}"`;
+    const {
+        data: { items: prs },
+    } = await octokit.rest.search.issuesAndPullRequests({q});
+
+    console.log(
+        "filtered prs: ",
+        prs.map((pr) => pr.number)
+    );
+    prs.forEach(async (pr) => {
+        const { data: prDetail } = await octokit.rest.pulls.get({
             owner,
             repo,
-            issue_number: pr.number,
-        });
-        const sentSlackLabel = "Hotfix-Helper: Sent Slack";
-        console.log(`Pr labels is: ${labels.map(label => label.name)}`)
-        const needNotifyFailure = labels.filter((label) => 
-            label.name === sentSlackLabel
-        ).length === 0
-
-        if (needNotifyFailure) {
-            console.log(`Notify Slack failure to ${slackBots}`);
-            slackBots.forEach(bot => {
-                sendSlackMsg(bot, `:cancel_allocation: Auto Merge <${pr.html_url}|PR ${pr.number}> failed. Please check. :pleading_face:`)
-            })
-            console.log(`Mark label of [${sentSlackLabel}]`);
-            await octokit.rest.issues.addLabels({
+            pull_number: pr.number
+        })
+        const { data: { check_runs }} = await octokit.rest.checks.listForRef({
+            owner, repo,
+            ref: prDetail.head.sha
+        })
+        const existFailure = check_runs.filter(run => run.conclusion === "failure").length > 0
+        const existUncomplete = check_runs.filter(run => run.status !== "completed").length > 0
+        if (existFailure) {
+            await processFailurePr(pr)
+        } else if (!existUncomplete && !existFailure) {
+            console.log("Ready merge: ", pr.number);
+            const { data: mergeResult } = await octokit.rest.pulls.merge({
                 owner,
                 repo,
-                issue_number: pr.number,
-                labels: [sentSlackLabel],
+                pull_number: pr.number,
             });
+            console.log(`Notify Slack merge success to ${slackBots}`);
+            slackBots.forEach(bot => {
+                sendSlackMsg(bot, `:white_check_mark: Auto Merged <${pr.html_url}|PR ${pr.number}>. :blob-clap::blob-clap::blob-clap:`)
+            })
         }
     });
 }
