@@ -155,7 +155,9 @@ async function autoMergePr() {
             ref: prDetail.head.sha
         })
         const existFailure = check_runs.filter(run => run.conclusion === "failure").length > 0
+        console.log("Exists failure check: ", existFailure)
         const existUncomplete = check_runs.filter(run => run.status !== "completed").length > 0
+        console.log("Exists uncomplete check: ", existUncomplete)
         if (existFailure) {
             await processFailurePr(pr)
         } else if (!existUncomplete && !existFailure) {
