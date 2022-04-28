@@ -154,9 +154,15 @@ async function autoMergePr() {
             owner, repo,
             ref: prDetail.head.sha
         })
-        const existFailure = check_runs.filter(run => run.conclusion === "failure").length > 0
+        const existFailure = check_runs.filter(run => {
+            console.log(`conclusion ${run.conclusion} ==> ${run.html_url}`)
+            return run.conclusion === "failure"
+        }).length > 0
         console.log("Exists failure check: ", existFailure)
-        const existUncomplete = check_runs.filter(run => run.status !== "completed").length > 0
+        const existUncomplete = check_runs.filter(run => {
+            console.log(`Status ${run.status} ==> ${run.html_url}`)
+            return run.status !== "completed"
+        }).length > 0
         console.log("Exists uncomplete check: ", existUncomplete)
         if (existFailure) {
             await processFailurePr(pr)
