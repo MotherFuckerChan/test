@@ -150,17 +150,29 @@ async function autoMergePr() {
             repo,
             pull_number: pr.number
         })
-        const { data: { check_runs }} = await octokit.rest.checks.listForRef({
+        let { data: { check_runs }} = await octokit.rest.checks.listForRef({
             owner, repo,
             ref: prDetail.head.sha
         })
+
+        // check run may run multiple names with the same name
+        // but we just care about the latest run
+        let checkedNames = new Set()
+        check_runs = check_runsk.filter(run => {
+            if (existCheckRunNames.has(run.name)) {
+                return false
+            }
+            existCheckRunNames.add(run.name)
+            return true
+        })
+
         const existFailure = check_runs.filter(run => {
-            console.log(`conclusion ${run.conclusion} ==> ${run.html_url}`)
+            console.log(`conclusion ${run.name} ${run.conclusion} ==> ${run.html_url}`)
             return run.conclusion === "failure"
         }).length > 0
         console.log("Exists failure check: ", existFailure)
         const existUncomplete = check_runs.filter(run => {
-            console.log(`Status ${run.status} ==> ${run.html_url}`)
+            console.log(`Status ${run.name} ${run.status} ==> ${run.html_url}`)
             return run.status !== "completed"
         }).length > 0
         console.log("Exists uncomplete check: ", existUncomplete)
