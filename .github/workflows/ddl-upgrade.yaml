@@ -1,0 +1,19 @@
+name: DDL Upgrade
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run ddl against'
+        type: environment
+        required: true 
+
+jobs:
+  test-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo ${SEC:0:5}
+
+
+      
