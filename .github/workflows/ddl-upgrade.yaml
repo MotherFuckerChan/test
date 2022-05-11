@@ -10,12 +10,15 @@ on:
 jobs:
   test-env:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     env:
       SEC: ${{ secrets.SEC }}
     steps:
-      - name: echo
+      - name: echo SEC
         run: |
           echo ${SEC:0:5}
-
+      - name: echo env
+        run: |
+          echo ${{inputs.environment}}
 
       
