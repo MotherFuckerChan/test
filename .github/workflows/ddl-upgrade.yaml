@@ -10,17 +10,17 @@ on:
 jobs:
   test-env:
     runs-on: ubuntu-latest
-    environment: PRODUCTION
+    environment: ${{ github.event.inputs.environment }}
     env:
       SEC: ${{ secrets.SEC }}
     steps:
       - name: echo SEC
         run: |
-          echo ${SEC:0:5}
+          echo ${SEC:2:6}
       - name: echo env
         run: |
           echo "input is: ${{ inputs.environment}}"
           echo "gh input is: ${{ github.event.inputs.environment}}"
-          echo "ESC is: ${SEC}}"
+          echo "ESC is: ${SEC:2:5}"
 
       
