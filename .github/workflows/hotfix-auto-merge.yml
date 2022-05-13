@@ -4,6 +4,7 @@ on:
     - cron: "7,27,47 * * * *"
   release:
     types: [published]
+  workflow_dispatch:
 
 
 jobs:
