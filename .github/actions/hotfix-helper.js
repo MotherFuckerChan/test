@@ -180,6 +180,19 @@ async function autoMergePr() {
             await processFailurePr(pr)
         } else if (!existUncomplete && !existFailure) {
             console.log("Ready merge: ", pr.number);
+            const { data: review } = await octokit.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: pr.number,
+            })
+            // repository setting: require at least 1 approve to merge.
+            const { data: reviewSubmit } = await octokit.rest.pulls.submitReview({
+                owner,
+                repo,
+                pull_number: pr.number,
+                review_id: review.id,
+                event: "APPROVE"
+            })
             const { data: mergeResult } = await octokit.rest.pulls.merge({
                 owner,
                 repo,
