@@ -1,3 +1,5 @@
+const { exec } = require('node:child_process');
+const core = require('@actions/core');
 const github = require("@actions/github");
 const axios = require("axios").default;
 const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
@@ -40,6 +42,16 @@ Check at least 1
 - [x] Is [Test Plan](#Test-Plan) filled out?
 - [x] Did you check if [Monitoring and Rollback Plan](#Monitoring-and-Rollback-Plan) is applicable and fill it if so?
 `;
+
+function execCallback(error, stdout, stderr) {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      core.setFailed(error)
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  }
 
 function sendSlackMsg(url, msg) {
     axios.post(
@@ -179,24 +191,20 @@ async function autoMergePr() {
         if (existFailure) {
             await processFailurePr(pr)
         } else if (!existUncomplete && !existFailure) {
-            console.log("Ready merge: ", pr.number);
-            const { data: review } = await octokit.rest.pulls.createReview({
+            if (pr.changed_files >= 0) {
+            console.log("Ready to merge: ", pr.number);
+                exec(`git pull origin ${pr.base.ref}`, execCallback)
+                exec(`git pull origin ${pr.head.ref}`, execCallback)
+                exec(`git checkout ${pr.base.ref}`, execCallback)
+                exec(`git merge ${pr.head.ref}`, execCallback)
+                exec(`git push ${pr.base.ref}`, execCallback)
+            }
+            console.log("Ready to close: ", pr.number);
+            const { data: closeResult } = await octokit.rest.pulls.update({
                 owner,
                 repo,
                 pull_number: pr.number,
-            })
-            // repository setting: require at least 1 approve to merge.
-            const { data: reviewSubmit } = await octokit.rest.pulls.submitReview({
-                owner,
-                repo,
-                pull_number: pr.number,
-                review_id: review.id,
-                event: "APPROVE"
-            })
-            const { data: mergeResult } = await octokit.rest.pulls.merge({
-                owner,
-                repo,
-                pull_number: pr.number,
+                state: "closed"
             });
             console.log(`Notify Slack merge success to ${slackBots}`);
             slackBots.forEach(bot => {
