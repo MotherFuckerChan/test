@@ -9,52 +9,35 @@ async function run() {
     const { data: prs } = await octokit.issues.listForRepo({
         owner: "MotherFuckerChan",
         repo: "test",
-        state: "open",
+        // state: "open",
         sort: "created"
     });
-    console.log(prs)
-    return
 
-    const datePattern = /(\d\d?).(\d\d?).(\d{2,4})/;
+    const datePattern = /(\d\d?)-(\d\d?)-(\d{2,4})/;
     const today = new Date();
 
-    console.log(`Found ${openIssues.length} open issues.`);
-
-    let issuesClosed = 0;
-
-    for (const issue of openIssues) {
-        const issueNumber = issue.number;
-        const issueTitle = issue.title;
-
-        const results = datePattern.exec(issueTitle);
+    for (const pr of prs) {
+        const results = datePattern.exec(pr.created_at);
+        console.log("Ptd", results)
 
         if (results !== null) {
             let [month, day, year] = results.slice(1).map((part) => parseInt(part, 10));
 
-            // if the year is under 100, assume it's from the 2000s
-            if (year < 100) {
-                year += 2000;
-            }
+            const prCreateDate = new Date(year, month - 1, day);
 
-            const issueDate = new Date(year, month - 1, day);
-
-            console.log(`Date found in title: ${issueDate.toDateString()}`)
-
-            if (issueDate < today) {
+            console.log(`Date found in title: ${prCreateDate.toDateString()}`)
+            const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
+            console.log("DayDff")
+            if (false) {
                 octokit.issues.update({
                     ...ghContext.repo,
                     issue_number: issueNumber,
                     state: "closed",
                 });
-
                 console.log(`Closed #${issue.number}.`);
-
-                issuesClosed++;
             }
         }
     }
-
-    console.log(`Closed ${issuesClosed} issues.`);
 }
 
 run();
