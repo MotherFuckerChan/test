@@ -1,0 +1,22 @@
+name: DDL Upgrade
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run ddl against'
+        type: environment
+        required: true 
+
+jobs:
+  auto-close-prs:
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install --registry=https://registry.npmjs.org @actions/github
+      - run: npm install @actions/core
+      - run: node .github/actions/auto-close-outdate-prs.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_BOTS: ${{ secrets.GLIDE_TM_INFRA_PR_CLASK_BOTS }}
