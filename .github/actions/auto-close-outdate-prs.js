@@ -25,7 +25,7 @@ async function run() {
             await octokit.pulls.update({
                 ...context.repo,
                 pull_number: pr.number,
-                state: "closed",
+                state: "closed"
             });
             console.log(`Closed #${pr.number}.`);
         }
