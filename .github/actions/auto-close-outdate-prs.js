@@ -17,13 +17,8 @@ async function run() {
     const today = new Date();
 
     for (const pr of prs) {
-        const results = datePattern.exec(pr.created_at.split("T"[0]));
-        console.log("Ptd", results)
-
         if (results !== null) {
-            let [month, day, year] = results.slice(1).map((part) => parseInt(part, 10));
-
-            const prCreateDate = new Date(year, month - 1, day);
+            const prCreateDate = Date.parse(pr.created_at.split("T")[0]);
 
             console.log(`Date found in title: ${prCreateDate.toDateString()}`)
             const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
