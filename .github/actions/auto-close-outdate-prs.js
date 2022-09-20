@@ -1,14 +1,14 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { Octokit } = require("@octokit/rest");
+const context = github.context;
 
 async function run() {
     const token = core.getInput("token");
     const octokit = new Octokit({auth: token});
 
     const { data: prs } = await octokit.issues.listForRepo({
-        owner: "MotherFuckerChan",
-        repo: "test",
+        ...context.repo,
         state: "closed",
         sort: "created",
         direction: "asc"
@@ -23,7 +23,7 @@ async function run() {
         console.log("DayDff", dayDiff)
         if (false) {
             octokit.issues.update({
-                ...ghContext.repo,
+                ...context.repo,
                 issue_number: issueNumber,
                 state: "closed",
             });
