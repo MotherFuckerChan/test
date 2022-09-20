@@ -7,7 +7,7 @@ async function run() {
     const token = core.getInput("token");
     const octokit = new Octokit({auth: token});
 
-    const { data: prs } = await octokit.issues.listForRepo({
+    const { data: prs } = await octokit.pulls.list({
         ...context.repo,
         state: "open",
         sort: "created",
@@ -22,7 +22,7 @@ async function run() {
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
         console.log("DayDff", dayDiff)
         if (dayDiff >= 0) {
-            octokit.pulls.update({
+            await octokit.pulls.update({
                 ...context.repo,
                 pull_number: pr.number,
                 state: "closed",
