@@ -7,8 +7,8 @@ async function run() {
     const octokit = new Octokit({auth: token});
 
     const { data: prs } = await octokit.issues.listForRepo({
-        owner: "UrbanCompass",
-        repo: "glide-devapp",
+        owner: "MotherFuckerChan",
+        repo: "test",
         state: "open",
         sort: "created"
     });
