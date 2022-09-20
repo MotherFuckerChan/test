@@ -9,7 +9,7 @@ async function run() {
 
     const { data: prs } = await octokit.issues.listForRepo({
         ...context.repo,
-        state: "opened",
+        state: "open",
         sort: "created",
         direction: "asc"
     });
