@@ -9,7 +9,7 @@ async function run() {
 
     const { data: prs } = await octokit.issues.listForRepo({
         ...context.repo,
-        state: "closed",
+        state: "opened",
         sort: "created",
         direction: "asc"
     });
@@ -21,13 +21,13 @@ async function run() {
         console.log(pr.created_at)
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
         console.log("DayDff", dayDiff)
-        if (false) {
-            octokit.issues.update({
+        if (dayDiff >= 0) {
+            octokit.pulls.update({
                 ...context.repo,
-                issue_number: issueNumber,
+                pull_number: pr.number,
                 state: "closed",
             });
-            console.log(`Closed #${issue.number}.`);
+            console.log(`Closed #${pr.number}.`);
         }
     }
 }
