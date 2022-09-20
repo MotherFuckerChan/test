@@ -9,8 +9,8 @@ async function run() {
     const { data: prs } = await octokit.issues.listForRepo({
         owner: "MotherFuckerChan",
         repo: "test",
-        // state: "open",
-        sort: "-created"
+        state: "closed",
+        sort: "created"
     });
 
     const today = new Date();
