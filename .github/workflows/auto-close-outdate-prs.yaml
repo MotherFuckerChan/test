@@ -11,7 +11,8 @@ jobs:
         with:
           node-version: 16
       - run: npm install --registry=https://registry.npmjs.org @actions/github
-      - run: npm install @actions/core
+      - run: npm install --registry=https://registry.npmjs.org @octokit/rest
+      - run: npm install --registry=https://registry.npmjs.org @actions/core
       - run: node .github/actions/auto-close-outdate-prs.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
