@@ -17,20 +17,17 @@ async function run() {
     const today = new Date();
 
     for (const pr of prs) {
-        if (results !== null) {
-            const prCreateDate = Date.parse(pr.created_at.split("T")[0]);
-
-            console.log(`Date found in title: ${prCreateDate.toDateString()}`)
-            const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
-            console.log("DayDff")
-            if (false) {
-                octokit.issues.update({
-                    ...ghContext.repo,
-                    issue_number: issueNumber,
-                    state: "closed",
-                });
-                console.log(`Closed #${issue.number}.`);
-            }
+        const prCreateDate = Date.parse(pr.created_at.split("T")[0]);
+        console.log(`Date found in title: ${prCreateDate.toDateString()}`)
+        const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
+        console.log("DayDff")
+        if (false) {
+            octokit.issues.update({
+                ...ghContext.repo,
+                issue_number: issueNumber,
+                state: "closed",
+            });
+            console.log(`Closed #${issue.number}.`);
         }
     }
 }
