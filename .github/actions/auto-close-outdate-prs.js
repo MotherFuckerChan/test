@@ -4,7 +4,7 @@ const { Octokit } = require("@octokit/rest");
 
 async function run() {
     const token = core.getInput("token");
-    const octokit = new github.GitHub(token);
+    const octokit = new Octokit({auth: token});
 
     const { data: prs } = await octokit.issues.listForRepo({
         owner: "UrbanCompass",
