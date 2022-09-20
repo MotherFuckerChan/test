@@ -1,14 +1,10 @@
-name: DDL Upgrade
+name: Auto Close Outdate Prs
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run ddl against'
-        type: environment
-        required: true 
 
 jobs:
   auto-close-prs:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
