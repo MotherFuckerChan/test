@@ -13,13 +13,13 @@ async function run() {
         sort: "created"
     });
 
-    const datePattern = /(\d\d?)-(\d\d?)-(\d{2,4})/;
     const today = new Date();
 
     for (const pr of prs) {
         const prCreateDate = Date.parse(pr.created_at.split("T")[0]);
+        console.log(pr.created_at)
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
-        console.log("DayDff")
+        console.log("DayDff", dayDiff)
         if (false) {
             octokit.issues.update({
                 ...ghContext.repo,
