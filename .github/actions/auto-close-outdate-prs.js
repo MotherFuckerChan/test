@@ -17,7 +17,7 @@ async function run() {
     const today = new Date();
 
     for (const pr of prs) {
-        const results = datePattern.exec(pr.created_at);
+        const results = datePattern.exec(pr.created_at.split("T"[0]));
         console.log("Ptd", results)
 
         if (results !== null) {
