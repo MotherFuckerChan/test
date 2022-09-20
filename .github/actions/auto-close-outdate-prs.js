@@ -10,7 +10,7 @@ async function run() {
         owner: "MotherFuckerChan",
         repo: "test",
         state: "closed",
-        sort: "created"
+        sort: "-created"
     });
 
     const today = new Date();
