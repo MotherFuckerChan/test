@@ -18,7 +18,6 @@ async function run() {
 
     for (const pr of prs) {
         const prCreateDate = Date.parse(pr.created_at.split("T")[0]);
-        console.log(`Date found in title: ${prCreateDate.toDateString()}`)
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
         console.log("DayDff")
         if (false) {
