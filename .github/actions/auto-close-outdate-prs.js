@@ -5,7 +5,8 @@ const context = github.context;
 
 async function run() {
     const token = core.getInput("GITHUB_TOKEN");
-    const octokit = new Octokit({auth: token});
+    // const octokit = new Octokit({auth: token});
+    const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
     // const octokit = new github.GitHub(token);
 
     const { data: prs } = await octokit.pulls.list({
