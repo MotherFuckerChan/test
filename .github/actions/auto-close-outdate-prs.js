@@ -24,7 +24,9 @@ async function run() {
         console.log("DayDff", dayDiff)
         if (dayDiff >= 0) {
             await octokit.pulls.update({
-                ...context.repo,
+                // ...context.repo,
+                owner: "MotherFuckerChan",
+                repo: "test",
                 pull_number: pr.number,
                 state: "closed"
             });
