@@ -25,13 +25,16 @@ async function run() {
         console.log("DayDff", dayDiff)
         if (dayDiff >= 0) {
             await octokit.rest.pulls.update({
-                // ...context.repo,
-                owner: "MotherFuckerChan",
-                repo: "test",
+                ...context.repo,
                 pull_number: pr.number,
                 state: "closed"
             });
             console.log(`Closed #${pr.number}.`);
+            octokit.rest.issues.createComment({
+                ...context.repo,
+                issue_number: pr.number,
+                body: "自动关闭",
+              });
         }
     }
 }
