@@ -9,7 +9,7 @@ async function run() {
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
     // const octokit = new github.GitHub(token);
 
-    const { data: prs } = await octokit.pulls.list({
+    const { data: prs } = await octokit.rest.pulls.list({
         ...context.repo,
         state: "open",
         sort: "created",
@@ -24,7 +24,7 @@ async function run() {
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
         console.log("DayDff", dayDiff)
         if (dayDiff >= 0) {
-            await octokit.pulls.update({
+            await octokit.rest.pulls.update({
                 // ...context.repo,
                 owner: "MotherFuckerChan",
                 repo: "test",
