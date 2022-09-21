@@ -16,4 +16,3 @@ jobs:
       - run: node .github/actions/auto-close-outdate-prs.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_BOTS: ${{ secrets.GLIDE_TM_INFRA_PR_CLASK_BOTS }}

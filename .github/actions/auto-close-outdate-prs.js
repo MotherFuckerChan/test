@@ -4,7 +4,7 @@ const { Octokit } = require("@octokit/rest");
 const context = github.context;
 
 async function run() {
-    const token = core.getInput("token");
+    const token = core.getInput("GITHUB_TOKEN");
     const octokit = new Octokit({auth: token});
     // const octokit = new github.GitHub(token);
 
