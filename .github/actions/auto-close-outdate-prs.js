@@ -23,9 +23,9 @@ async function run() {
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
         console.log("DayDff", dayDiff)
         if (dayDiff >= 0) {
-            await octokit.issues.update({
+            await octokit.pulls.update({
                 ...context.repo,
-                issue_number: pr.number,
+                pull_number: pr.number,
                 state: "closed"
             });
             console.log(`Closed #${pr.number}.`);
