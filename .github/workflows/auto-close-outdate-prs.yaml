@@ -2,7 +2,7 @@ name: Auto Close Outdate Prs
 on:
   workflow_dispatch:
   schedule:
-   - cron: '37 12 * * *'
+   - cron: '10 13 * * *'
 
 jobs:
   auto-close-prs:
