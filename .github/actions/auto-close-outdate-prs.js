@@ -2,7 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const { Octokit } = require("@octokit/rest");
 const context = github.context;
-
+const maxDays = 90;
 async function run() {
     const token = core.getInput("GITHUB_TOKEN");
     // const octokit = new Octokit({auth: token});
@@ -33,7 +33,7 @@ async function run() {
             octokit.rest.issues.createComment({
                 ...context.repo,
                 issue_number: pr.number,
-                body: "自动关闭",
+                body: `This pr has opened more than ${maxDays} and be closed automatic. For more detail see [ticket](https://compass-tech.atlassian.net/browse/TMINFRA-873)`,
               });
         }
     }
