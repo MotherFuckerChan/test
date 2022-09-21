@@ -5,9 +5,7 @@ const context = github.context;
 const maxDays = 90;
 async function run() {
     const token = core.getInput("GITHUB_TOKEN");
-    // const octokit = new Octokit({auth: token});
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-    // const octokit = new github.GitHub(token);
 
     const { data: prs } = await octokit.rest.pulls.list({
         ...context.repo,
@@ -23,7 +21,7 @@ async function run() {
         console.log(pr.created_at)
         const dayDiff = parseInt(Math.abs(today - prCreateDate) / 1000 / 60 / 60 / 24)
         console.log("DayDff", dayDiff)
-        if (dayDiff >= 0) {
+        if (dayDiff >= maxDays) {
             await octokit.rest.pulls.update({
                 ...context.repo,
                 pull_number: pr.number,
